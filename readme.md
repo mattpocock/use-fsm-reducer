@@ -13,7 +13,7 @@ It helps you bootstrap a reducer, similar to [Redux-Toolkit](https://redux-toolk
 # Example Code
 
 ```ts
-import useFsmReducer from 'use-fsm-reducer'
+import useFsmReducer from 'use-fsm-reducer';
 
 /**
  * Our state can be in any of these states.
@@ -36,12 +36,14 @@ type Action =
 
 /**
  * We declare all effects that this reducer can fire off.
- * 
+ *
  * An effect is anything you would put inside a useEffect - an
  * impure function that happens as a result of piece
  * of state changing, or an action firing.
  */
-type Effect = { type: 'loadData' } | { type: 'showErrorMessage'; message: string; };
+type Effect =
+  | { type: 'loadData' }
+  | { type: 'showErrorMessage'; message: string };
 
 /**
  * You get back state and dispatch, the API you're

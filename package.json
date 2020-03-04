@@ -25,7 +25,7 @@
     "printWidth": 80,
     "semi": true,
     "singleQuote": true,
-    "trailingComma": "es5"
+    "trailingComma": "all"
   },
   "name": "use-fsm-reducer",
   "author": "Matt Pocock",

@@ -59,7 +59,7 @@ const useFsmReducer = <
   } as State<TState, TEffect>);
 
   useEffect(() => {
-    state.effects?.forEach((effect) => {
+    state.effects?.forEach(effect => {
       /**
        * If an effect exists, call it whenever
        * the effects change
@@ -74,4 +74,4 @@ const useFsmReducer = <
   return [state, dispatch] as const;
 };
 
-export default useFsmReducer
+export default useFsmReducer;

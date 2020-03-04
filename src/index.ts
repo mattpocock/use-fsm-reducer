@@ -19,7 +19,7 @@ interface Params<
     };
   };
   effects?: {
-    [K in TEffect['type']]?: (params: {
+    [K in TEffect['type']]: (params: {
       effect: Extract<TEffect, { type: K }>;
       dispatch: (action: TAction) => void;
     }) => void;

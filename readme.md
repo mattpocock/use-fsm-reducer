@@ -41,7 +41,7 @@ type Action =
  * impure function that happens as a result of piece
  * of state changing, or an action firing.
  */
-type Effect = { type: 'loadData' } | { type: 'showErrorMessage' };
+type Effect = { type: 'loadData' } | { type: 'showErrorMessage'; message: string; };
 
 /**
  * You get back state and dispatch, the API you're
@@ -78,7 +78,7 @@ const [state, dispatch] = useFsmReducer<State, Action, Effect>({
            * Return an array of all the effects
            * you'd like this state change to trigger
            */
-          effects: [{ type: 'showErrorMessage' }],
+          effects: [{ type: 'showErrorMessage', message: 'Oh noooo!' }],
         };
       },
     },
@@ -103,8 +103,8 @@ const [state, dispatch] = useFsmReducer<State, Action, Effect>({
           dispatch({ type: 'reportError' });
         });
     },
-    showErrorMessage: () => {
-      console.error('Oh nooo...');
+    showErrorMessage: ({ effect }) => {
+      console.error(effect.message);
     },
   },
 });

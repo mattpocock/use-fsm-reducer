@@ -4,26 +4,34 @@ type State<TState, TEffect> = TState & {
   effects?: TEffect[];
 };
 
-interface Params<
+export type UseFsmReducerEffects<TAction, TEffect extends { type: string }> = {
+  [K in TEffect['type']]: (params: {
+    effect: Extract<TEffect, { type: K }>;
+    dispatch: (action: TAction) => void;
+  }) => void;
+};
+
+export type UseFsmReducerStates<
+  TState extends { type: string },
+  TAction extends { type: string },
+  TEffect extends { type: string }
+> = {
+  [S in TState['type']]?: {
+    [A in TAction['type']]?: (
+      state: State<Extract<TState, { type: S }>, TEffect>,
+      action: Extract<TAction, { type: A }>,
+    ) => State<TState, TEffect>;
+  };
+};
+
+export interface UseFsmReducerParams<
   TState extends { type: string },
   TAction extends { type: string },
   TEffect extends { type: string }
 > {
   initialState: TState;
-  states: {
-    [S in TState['type']]?: {
-      [A in TAction['type']]?: (
-        state: State<Extract<TState, { type: S }>, TEffect>,
-        action: Extract<TAction, { type: A }>,
-      ) => State<TState, TEffect>;
-    };
-  };
-  effects?: {
-    [K in TEffect['type']]: (params: {
-      effect: Extract<TEffect, { type: K }>;
-      dispatch: (action: TAction) => void;
-    }) => void;
-  };
+  states: UseFsmReducerStates<TState, TAction, TEffect>;
+  effects?: UseFsmReducerEffects<TAction, TEffect>;
   runEffectsOnMount?: TEffect[];
 }
 
@@ -36,7 +44,7 @@ const useFsmReducer = <
   states,
   effects,
   runEffectsOnMount,
-}: Params<TState, TAction, TEffect>) => {
+}: UseFsmReducerParams<TState, TAction, TEffect>) => {
   const reducer = (
     state: State<TState, TEffect>,
     action: TAction,

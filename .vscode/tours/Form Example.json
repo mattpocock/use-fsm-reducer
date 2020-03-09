@@ -1,0 +1,76 @@
+{
+  "title": "Form Example",
+  "description": "",
+  "steps": [
+    {
+      "file": "examples/form.ts",
+      "line": 51,
+      "description": "This is how we might use useFsmReducer with some form logic.\n\nYou'll learn how to properly type states, actions and effects, and learn how the finite state machine flow helps prevent bugs."
+    },
+    {
+      "file": "examples/form.ts",
+      "line": 3,
+      "description": "If we were coding this in the wild, I would start by declaring all the types that our reducer state can be in.\n\nStates work a little differently in `useFsmReducer`. Instead of declaring a single state:\n\n```ts\ninterface State {\n  email: string;\n  password: string;\n  formError?: string;\n  error: string;\n  isLoading: boolean;\n  hasSucceeded: boolean;\n}\n```\n\nWe describe multiple states, each with a unique 'type':\n\n```ts\ntype State =\n  | {\n      type: 'initial';\n      email: string;\n      password: string;\n      formError?: string;\n    }\n  | {\n      type: 'pending';\n      email: string;\n      password: string;\n    }\n  | { type: 'errored'; error: string }\n  | { type: 'success' }\n```"
+    },
+    {
+      "file": "examples/form.ts",
+      "line": 18,
+      "description": "Next, we type out our actions. These will look very similar to traditional reducer actions. Nothing fancy here, just declaring which actions can pass through our reducer."
+    },
+    {
+      "file": "examples/form.ts",
+      "line": 41,
+      "description": "Finally, we type out our Effects.\n\nEffects are side effects that are produced by the reducer. The ones below describe:\n\n1. A `submitForm` effect, which will perform some async action with the API.\n2. A `navigateAwayFromPage` effect, which will set `window.location.href` to `/`\n\nAs you can see, we declare them very similarly to actions. Each of them has a `type`. So, why have Effects at all? Why not just use actions?\n\nHere, I took inspiration from Elm. Elm separates actions from effects in this way too. Actions are pure functions, which only change state and trigger actions. Effects are anything impure, which reacts to environments or performs async logic. Basically - anything you'd put in a useEffect.\n\nModelling effects this way means that you can test the reducer independently from the effects, and switch the effects in and out during implementation."
+    },
+    {
+      "file": "examples/form.ts",
+      "line": 52,
+      "description": "Now that we've typed our State, Action and Effect types, we can pump them in to useFsmReducer."
+    },
+    {
+      "file": "examples/form.ts",
+      "line": 53,
+      "description": "Here, we declare which state we want to start in, and its starting properties. Our form starts empty, with email and password blank."
+    },
+    {
+      "file": "examples/form.ts",
+      "line": 56,
+      "description": "In the initial state, we can change the value of the form. Notice that actions don't have to change state. Even though we're triggering an action, we're actually heading back to the same state, `initial`."
+    },
+    {
+      "file": "examples/form.ts",
+      "line": 64,
+      "description": "When we're in the `initial` state and receive the submitForm action, we check to see if the form is valid. If it's not valid, we go back to the initial state with a formError."
+    },
+    {
+      "file": "examples/form.ts",
+      "line": 74,
+      "description": "But if it is valid, we go to the pending state.\n\nAnd crucially, we fire off our first effect. This is how we call effects from actions - simply return them as an array from the action itself.\n\nNotice that this keeps the action very pure."
+    },
+    {
+      "file": "src/index.ts",
+      "line": 69,
+      "description": "Effects are managed in useFsmReducer via a useEffect call. Every time state.effects changes, it will run through each effect and fire it."
+    },
+    {
+      "file": "examples/form.ts",
+      "line": 84,
+      "description": "Now, we're in the pending state. Note that if we tried to submit the form again, we wouldn't be able to. That action only works when we're in the `initial` state."
+    },
+    {
+      "file": "examples/form.ts",
+      "line": 118,
+      "description": "The submitForm effect is running. If it succeeds, it'll dispatch a reportSubmitSuccess action. If it fails, it'll dispatch a reportSubmitError action.\n\nEffects can do anything - they are a very powerful tool which can handle any async action."
+    },
+    {
+      "file": "examples/form.ts",
+      "line": 91,
+      "description": "Let's say that we received a successful result. All we do now is go to the 'success' state.\n\nAgain, during the success state you can't resubmit the form or change any values - that only works in the 'initial' state."
+    },
+    {
+      "file": "examples/form.ts",
+      "line": 106,
+      "description": "And now we can respond to a 'clickBackButton' action which will take the user back to `/`, via the `navigateAwayFromPage` action."
+    }
+  ]
+}

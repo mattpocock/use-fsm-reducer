@@ -1,10 +1,10 @@
 # useFsmReducer
 
-Heavily inspired by [David Khoursid's article](https://dev.to/davidkpiano/redux-is-half-of-a-pattern-1-2-1hd7).
+Heavily inspired by [David Khourshid's article](https://dev.to/davidkpiano/redux-is-half-of-a-pattern-1-2-1hd7).
 
-`useFsmReducer` is a function which helps to bring state machine code quality to a common React pattern - `useReducer`.
+`useFsmReducer` is a hook which helps to bring state machine code quality to a common React pattern - `useReducer`.
 
-It helps you bootstrap a reducer, similar to [Redux-Toolkit](https://redux-toolkit.js.org/), but also helps extract your effects and help you scale complexity.
+It helps you bootstrap a reducer, similar to [redux-toolkit](https://redux-toolkit.js.org/), but also helps extract your effects and help you scale complexity.
 
 ### Installation
 
@@ -96,7 +96,7 @@ const [state, dispatch] = useFsmReducer<State, Action, Effect>({
   effects: {
     loadData: ({ dispatch }) => {
       /** Fetch some data and fire off more actions */
-      fetch('https://api.coindesk.com/v1/bpi/currentprice/GBP.json')
+      fetch('...')
         .then(res => res.json())
         .then(data => {
           dispatch({ type: 'reportDataLoaded', data: JSON.stringify(data) });
@@ -111,3 +111,5 @@ const [state, dispatch] = useFsmReducer<State, Action, Effect>({
   },
 });
 ```
+
+> There's another example in [examples/form.ts](./examples/form.ts)

@@ -53,61 +53,69 @@ export const useFormLogic = () => {
     initialState: { type: 'initial', email: '', password: '' },
     states: {
       initial: {
-        changeValue: (state, action) => {
-          return {
-            ...state,
-            type: 'initial',
-            [action.input]: action.value,
-            formError: '',
-          };
-        },
-        submitForm: (state, action) => {
-          if (!state.password || !state.email) {
+        on: {
+          changeValue: (state, action) => {
             return {
               ...state,
               type: 'initial',
-              formError: 'You must include all values above.',
+              [action.input]: action.value,
+              formError: '',
             };
-          }
-          return {
-            ...state,
-            type: 'pending',
-            effects: [
-              {
-                type: 'submitForm',
-                values: { email: state.email, password: state.password },
-              },
-            ],
-          };
+          },
+          submitForm: (state, action) => {
+            if (!state.password || !state.email) {
+              return {
+                ...state,
+                type: 'initial',
+                formError: 'You must include all values above.',
+              };
+            }
+            return {
+              ...state,
+              type: 'pending',
+              effects: [
+                {
+                  type: 'submitForm',
+                  values: { email: state.email, password: state.password },
+                },
+              ],
+            };
+          },
         },
       },
       pending: {
-        reportSubmitError: () => {
-          return {
-            type: 'errored',
-            error: 'Oh no, something bad happened.',
-          };
-        },
-        reportSubmitSuccess: () => {
-          return {
-            type: 'success',
-          };
+        on: {
+          reportSubmitError: () => {
+            return {
+              type: 'errored',
+              error: 'Oh no, something bad happened.',
+            };
+          },
+          reportSubmitSuccess: () => {
+            return {
+              type: 'success',
+            };
+          },
         },
       },
       errored: {
-        clickBackButton: state => {
-          return {
-            ...state,
-            effects: [{ type: 'navigateAwayFromPage' }],
-          };
+        on: {
+          clickBackButton: state => {
+            return {
+              ...state,
+              effects: [{ type: 'navigateAwayFromPage' }],
+            };
+          },
         },
       },
       success: {
-        clickBackButton: state => {
-          return {
-            ...state,
-            effects: [{ type: 'navigateAwayFromPage' }],
-          };
+        on: {
+          clickBackButton: state => {
+            return {
+              ...state,
+              effects: [{ type: 'navigateAwayFromPage' }],
+            };
+          },
         },
       },
     },

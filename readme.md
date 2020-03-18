@@ -67,29 +67,33 @@ const [state, dispatch] = useFsmReducer<State, Action, Effect>({
      * and fire off effects.
      */
     pending: {
-      reportDataLoaded: (state, action) => {
-        return {
-          type: 'loaded',
-          data: action.data,
-        };
-      },
-      reportError: () => {
-        return {
-          type: 'errored',
-          /**
-           * Return an array of all the effects
-           * you'd like this state change to trigger
-           */
-          effects: [{ type: 'showErrorMessage', message: 'Oh noooo!' }],
-        };
+      on: {
+        reportDataLoaded: (state, action) => {
+          return {
+            type: 'loaded',
+            data: action.data,
+          };
+        },
+        reportError: () => {
+          return {
+            type: 'errored',
+            /**
+             * Return an array of all the effects
+             * you'd like this state change to trigger
+             */
+            effects: [{ type: 'showErrorMessage', message: 'Oh noooo!' }],
+          };
+        },
       },
     },
     errored: {
-      retry: () => {
-        return {
-          type: 'pending',
-          effects: [{ type: 'loadData' }],
-        };
+      on: {
+        retry: () => {
+          return {
+            type: 'pending',
+            effects: [{ type: 'loadData' }],
+          };
+        },
       },
     },
   },

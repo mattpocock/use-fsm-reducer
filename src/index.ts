@@ -17,10 +17,12 @@ export type UseFsmReducerStates<
   TEffect extends { type: string }
 > = {
   [S in TState['type']]?: {
-    [A in TAction['type']]?: (
-      state: State<Extract<TState, { type: S }>, TEffect>,
-      action: Extract<TAction, { type: A }>,
-    ) => State<TState, TEffect>;
+    on?: {
+      [A in TAction['type']]?: (
+        state: State<Extract<TState, { type: S }>, TEffect>,
+        action: Extract<TAction, { type: A }>,
+      ) => State<TState, TEffect>;
+    };
   };
 };
 
@@ -32,6 +34,12 @@ export interface UseFsmReducerParams<
   initialState: TState;
   states: UseFsmReducerStates<TState, TAction, TEffect>;
   effects?: UseFsmReducerEffects<TAction, TEffect>;
+  on?: {
+    [A in TAction['type']]?: (
+      state: State<TState, TEffect>,
+      action: Extract<TAction, { type: A }>,
+    ) => State<TState, TEffect>;
+  };
   runEffectsOnMount?: TEffect[];
 }
 
@@ -42,6 +50,7 @@ const useFsmReducer = <
 >({
   initialState,
   states,
+  on,
   effects,
   runEffectsOnMount,
 }: UseFsmReducerParams<TState, TAction, TEffect>) => {
@@ -49,16 +58,25 @@ const useFsmReducer = <
     state: State<TState, TEffect>,
     action: TAction,
   ): State<TState, TEffect> => {
+    const actionWithinState =
+      states?.[state.type as TState['type']]?.on?.[
+        action.type as TAction['type']
+      ];
+
+    const globalAction = on?.[action.type as TAction['type']];
+
+    const actionToRun = actionWithinState || globalAction;
     return (
       /**
-       * If a case exists in states for
+       * If a case exists in this state's 'on' for
        * the current state.type, then run it.
+       *
+       * If a case exists in the global 'on',
+       * then run it.
        *
        * Otherwise, return the current state
        */
-      states?.[state.type as TState['type']]?.[
-        action.type as TAction['type']
-      ]?.(state as any, action as any) || state
+      actionToRun?.(state as any, action as any) || state
     );
   };
   const [state, dispatch] = useReducer(reducer, {

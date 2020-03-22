@@ -70,7 +70,7 @@ const useFsmReducer = <
       /**
        * If a case exists in this state's 'on' for
        * the current state.type, then run it.
-       * 
+       *
        * If a case exists in the global 'on',
        * then run it.
        *
